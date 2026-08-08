@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+/*
+ * SERAI MEDIA — design tokens
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-ink -> bg-ink, text-ink). Fraunces and Inter are
+ * self-hosted via @fontsource-variable (imported in layout.tsx) — both
+ * variable fonts, so Fraunces keeps its optical-size / soft / wonk axes.
+ * No request ever leaves the app for fonts, in dev or production.
+ */
+
+@theme inline {
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+
+  --color-ink: var(--ink);
+  --color-graphite: var(--graphite);
+  --color-steel: var(--steel);
+  --color-ash: var(--ash);
+  --color-paper: var(--paper);
+  --color-saffron: var(--saffron);
+
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--ink);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+}
+
+:root {
+  /* Brand palette — monochrome + one warm accent, per brand guidelines */
+  --ink: #0b0b0c;
+  --graphite: #2a2a2e;
+  --steel: #6e6e76;
+  --ash: #c9c9ce;
+  --paper: #f7f7f5;
+  --saffron: #f4a300;
+
+  --secondary: #f0f0ee;
+  --destructive: #b3261e;
+  --border: #e4e4e1;
+  --input: #d9d9d6;
+
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern", "liga", "calt";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--saffron);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+  }
+}
+
+/* ---- Editorial utilities ---- */
+
+@utility shell {
+  width: 100%;
+  max-width: 84rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 3rem;
+  }
+
+  @media (width >= 80rem) {
+    padding-inline: 5rem;
+  }
+}
+
+@utility display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings:
+    "SOFT" 0,
+    "WONK" 1,
+    "opsz" 144;
+  letter-spacing: -0.022em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--steel);
+}
+
+@utility prose-editorial {
+  & p {
+    font-size: 1.0625rem;
+    line-height: 1.85;
+    color: var(--graphite);
+    max-width: 38rem;
+  }
+
+  & p + p {
+    margin-top: 1.5rem;
+  }
+}
+
+/* ---- Reveal on scroll ---- */
+
+@utility reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.9s var(--ease-editorial),
+    transform 0.9s var(--ease-editorial);
+  will-change: opacity, transform;
+
+  &[data-revealed="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
